@@ -69,6 +69,7 @@ export class Employee extends Model<Employee, IEmployeeCreationAttr> {
 
   @Column({
     type: DataType.STRING,
+    unique: true,
   })
   declare email: string;
 

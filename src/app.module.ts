@@ -31,6 +31,8 @@ import { Prescription } from "./prescription/models/prescription.model";
 import { PrescriptionMedicinesModule } from './prescription_medicines/prescription_medicines.module';
 import { PrescriptionMedicine } from "./prescription_medicines/models/prescription_medicine.model";
 import { Medicine } from "./medicines/models/medicine.model";
+import { AuthModule } from './auth/auth.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -78,6 +80,8 @@ import { Medicine } from "./medicines/models/medicine.model";
     DiagnosisIlnessesModule,
     PrescriptionModule,
     PrescriptionMedicinesModule,
+    AuthModule,
+    MailModule,
   ],
   controllers: [],
   providers: [],
