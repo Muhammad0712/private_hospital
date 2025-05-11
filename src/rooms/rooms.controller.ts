@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { RoomsService } from './rooms.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { Room } from './models/room.model';
+import { Roles } from '../common/decorators/roles-auth.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @Controller("rooms")
 export class RoomsController {
@@ -26,6 +29,9 @@ export class RoomsController {
     status: 400,
     description: "Yuborilgan ma'lumotlar noto'g'ri",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createRoomDto: CreateRoomDto) {
     return this.roomsService.create(createRoomDto);
@@ -45,6 +51,9 @@ export class RoomsController {
     status: 404,
     description: "Xonalar topilmadi",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.roomsService.findAll();
@@ -73,6 +82,9 @@ export class RoomsController {
     status: 400,
     description: "Noto'g'ri ID kiritildi",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.roomsService.findOne(+id);
@@ -95,7 +107,7 @@ export class RoomsController {
   })
   @ApiResponse({
     status: 200,
-    type: UpdateRoomDto, 
+    type: UpdateRoomDto,
     description: "Xona muvaffaqiyatli yangilandi",
   })
   @ApiResponse({
@@ -106,6 +118,9 @@ export class RoomsController {
     status: 400,
     description: "Yuborilgan ma'lumotlar noto'g'ri",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateRoomDto: UpdateRoomDto) {
     return this.roomsService.update(+id, updateRoomDto);
@@ -133,6 +148,9 @@ export class RoomsController {
     status: 400,
     description: "So'rovda xatolik mavjud",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.roomsService.remove(+id);

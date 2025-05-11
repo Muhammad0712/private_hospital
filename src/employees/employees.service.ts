@@ -16,7 +16,6 @@ export class EmployeesService {
     const newUser = await this.employeeModel.create({
       ...createEmployeeDto,
       password: hashed_password,
-      is_active: true,
     });
     return newUser;
   }

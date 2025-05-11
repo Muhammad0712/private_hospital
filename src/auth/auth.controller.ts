@@ -47,6 +47,7 @@ export class AuthController {
     description:
       "Ma'lumotlar noto‘g‘ri kiritilgan yoki foydalanuvchi allaqachon mavjud",
   })
+  @HttpCode(201)
   @Post("patients/sign-up")
   async signUpPatient(@Body() createPatientDto: CreatePatientDto) {
     return this.authService.signUp(this.pantientsService, createPatientDto);
@@ -73,12 +74,18 @@ export class AuthController {
     status: 401,
     description: "Tizimga kirish uchun avtorizatsiya talab qilinadi",
   })
+  @HttpCode(200)
   @Post("patients/sign-in")
   async signInPatient(
     @Body() signInDto: SignInDto,
-    @Res({ passthrough: true }) res: Response
+    @Res({ passthrough: true }) res: Response,
   ) {
-    return this.authService.signIn(this.pantientsService, signInDto, res);
+    
+    return this.authService.signIn(
+      this.pantientsService,
+      signInDto,
+      res
+    );
   }
 
   //____________________SIGN-OUT-PATIENT____________________
@@ -162,12 +169,17 @@ export class AuthController {
     status: 400,
     description: "Email yoki parol noto‘g‘ri, yoki email tasdiqlanmagan",
   })
+  @HttpCode(200)
   @Post("employees/sign-in")
   async signInEmployee(
     @Body() signInDto: SignInDto,
     @Res({ passthrough: true }) res: Response
   ) {
-    return this.authService.signIn(this.employeesService, signInDto, res);
+    return this.authService.signIn(
+      this.employeesService,
+      signInDto,
+      res
+    );
   }
 
   //____________________SIGN-OUT-EMPLOYEE____________________
@@ -250,6 +262,7 @@ export class AuthController {
     status: 400,
     description: "Email yoki parol noto‘g‘ri, yoki email tasdiqlanmagan",
   })
+  @HttpCode(200)
   @Post("doctors/sign-in")
   async signInDoctor(
     @Body() signInDto: SignInDto,
@@ -277,7 +290,7 @@ export class AuthController {
     description: "Tizimdan chiqish uchun avtorizatsiya talab qilinadi",
   })
   @HttpCode(200)
-  @Post("employees/sign-out")
+  @Post("doctors/sign-out")
   signOutDoctor(
     @CookieGetter("refresh_token") refreshToken: string,
     @Res({ passthrough: true }) res: Response

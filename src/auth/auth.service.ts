@@ -20,8 +20,8 @@ export class AuthService {
     const payload = {
       id: user.id,
       email: user.email,
-      role: "patient",
-    };
+      role: user.role,
+    }
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: process.env.ACCESS_TOKEN_KEY,
@@ -65,7 +65,7 @@ export class AuthService {
   }
 
   async signUp(userModelService: any, createPatientDto: CreatePatientDto) {
-    const candidate = await userModelService.findPatientByMail(
+    const candidate = await userModelService.findUserByEmail(
       createPatientDto.email
     );
     if (candidate) {
@@ -119,7 +119,7 @@ export class AuthService {
       throw new ForbiddenException("Forbidden");
     }
 
-    const { accessToken, refreshToken } = await this.generateTokens(user!);
+    const { accessToken, refreshToken } = await this.generateTokens(user);
     const hashed_refresh_token = await bcrypt.hash(refreshToken, 7);
     await userModelService.updateRefreshToken(
       user!.id,

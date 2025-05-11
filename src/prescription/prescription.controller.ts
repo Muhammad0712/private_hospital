@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { PrescriptionService } from './prescription.service';
 import { CreatePrescriptionDto } from './dto/create-prescription.dto';
 import { UpdatePrescriptionDto } from './dto/update-prescription.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { Prescription } from './models/prescription.model';
+import { Roles } from '../common/decorators/roles-auth.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @Controller("prescription")
 export class PrescriptionController {
@@ -31,6 +34,9 @@ export class PrescriptionController {
     status: 500,
     description: "Server xatoligi",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createPrescriptionDto: CreatePrescriptionDto) {
     return this.prescriptionService.create(createPrescriptionDto);
@@ -50,6 +56,9 @@ export class PrescriptionController {
     status: 500,
     description: "Server xatoligi",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.prescriptionService.findAll();
@@ -78,6 +87,9 @@ export class PrescriptionController {
     status: 500,
     description: "Server xatoligi",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.prescriptionService.findOne(+id);
@@ -114,6 +126,9 @@ export class PrescriptionController {
     status: 500,
     description: "Server xatoligi",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   update(
     @Param("id") id: string,
@@ -148,6 +163,9 @@ export class PrescriptionController {
     status: 500,
     description: "Server xatoligi",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.prescriptionService.remove(+id);

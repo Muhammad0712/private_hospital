@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { MedicinesService } from './medicines.service';
 import { CreateMedicineDto } from './dto/create-medicine.dto';
 import { UpdateMedicineDto } from './dto/update-medicine.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { Medicine } from './models/medicine.model';
+import { Roles } from '../common/decorators/roles-auth.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @Controller("medicines")
 export class MedicinesController {
@@ -26,6 +29,9 @@ export class MedicinesController {
     status: 400,
     description: "Yuborilgan ma'lumotlar noto'g'ri",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createMedicineDto: CreateMedicineDto) {
     return this.medicinesService.create(createMedicineDto);
@@ -41,6 +47,9 @@ export class MedicinesController {
     type: [Medicine],
     description: "Dorilar ro'yxati muvaffaqiyatli qaytarildi",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.medicinesService.findAll();
@@ -65,6 +74,9 @@ export class MedicinesController {
     status: 404,
     description: "Dori topilmadi",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.medicinesService.findOne(+id);
@@ -96,6 +108,9 @@ export class MedicinesController {
     status: 400,
     description: "Yuborilgan ma'lumotlar noto'g'ri",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   update(
     @Param("id") id: string,
@@ -122,6 +137,9 @@ export class MedicinesController {
     status: 404,
     description: "Dori topilmadi",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.medicinesService.remove(+id);

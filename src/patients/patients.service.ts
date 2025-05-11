@@ -23,10 +23,8 @@ export class PatientsService {
   ) {}
 
   async create(createPatientDto: CreatePatientDto) {
-    const { password, confirm_password } = createPatientDto;
-    if (password !== confirm_password) {
-      throw new BadRequestException("Parollar mos emas!");
-    }
+    const { password } = createPatientDto;
+    
     const hashed_password = await bcrypt.hash(password, 7);
     const newUser = await this.patientModel.create({
       ...createPatientDto,

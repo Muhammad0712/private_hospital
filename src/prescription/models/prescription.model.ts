@@ -28,7 +28,7 @@ export class Prescription extends Model<Prescription, IPrescriptionCreationAttr>
     @Column({
         type: DataType.INTEGER
     })
-    declare doctor_appointment_id: number
+    declare doctor_appointment_id: number;
 
     @BelongsTo(() => DoctorAppointment)
     doctor_appointment: DoctorAppointment;

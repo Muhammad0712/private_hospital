@@ -1,16 +1,23 @@
-import { Injectable } from '@nestjs/common';
-import { CreateDoctorDto } from './dto/create-doctor.dto';
-import { UpdateDoctorDto } from './dto/update-doctor.dto';
-import { InjectModel } from '@nestjs/sequelize';
-import { Doctor } from './models/doctor.model';
+import { Injectable } from "@nestjs/common";
+import { CreateDoctorDto } from "./dto/create-doctor.dto";
+import { UpdateDoctorDto } from "./dto/update-doctor.dto";
+import { InjectModel } from "@nestjs/sequelize";
+import { Doctor } from "./models/doctor.model";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class DoctorsService {
   constructor(
     @InjectModel(Doctor) private readonly doctorModel: typeof Doctor
   ) {}
-  create(createDoctorDto: CreateDoctorDto) {
-    return this.doctorModel.create(createDoctorDto);
+  async create(createDoctorDto: CreateDoctorDto) {
+    const { password } = createDoctorDto;
+    const hashed_password = await bcrypt.hash(password, 7);
+    const newUser = await this.doctorModel.create({
+      ...createDoctorDto,
+      password: hashed_password,
+    });
+    return newUser;
   }
 
   findAll() {

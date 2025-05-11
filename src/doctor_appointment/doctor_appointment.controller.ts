@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { DoctorAppointmentService } from './doctor_appointment.service';
 import { CreateDoctorAppointmentDto } from './dto/create-doctor_appointment.dto';
 import { UpdateDoctorAppointmentDto } from './dto/update-doctor_appointment.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { DoctorAppointment } from './models/doctor_appointment.models';
+import { Roles } from '../common/decorators/roles-auth.decorator';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../common/guards/roles.guard';
 
 @Controller("doctor-appointment")
 export class DoctorAppointmentController {
@@ -33,6 +36,9 @@ export class DoctorAppointmentController {
     status: 500,
     description: "Server xatosi",
   })
+  @Roles("doctor", "employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createDoctorAppointmentDto: CreateDoctorAppointmentDto) {
     return this.doctorAppointmentService.create(createDoctorAppointmentDto);
@@ -45,13 +51,16 @@ export class DoctorAppointmentController {
   })
   @ApiResponse({
     status: 200,
-    type: [DoctorAppointment], 
+    type: [DoctorAppointment],
     description: "Barcha doktor qabul ma'lumotlari muvaffaqiyatli qaytarildi",
   })
   @ApiResponse({
     status: 404,
     description: "Doktor qabul ma'lumotlari topilmadi",
   })
+  @Roles("doctor", "employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.doctorAppointmentService.findAll();
@@ -80,6 +89,9 @@ export class DoctorAppointmentController {
     status: 400,
     description: "Yuborilgan ma'lumotlar noto'g'ri",
   })
+  @Roles("doctor", "employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.doctorAppointmentService.findOne(+id);
@@ -113,6 +125,9 @@ export class DoctorAppointmentController {
     status: 400,
     description: "Yuborilgan ma'lumotlar noto'g'ri",
   })
+  @Roles("doctor", "employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   update(
     @Param("id") id: string,
@@ -146,6 +161,9 @@ export class DoctorAppointmentController {
     status: 400,
     description: "Yuborilgan ma'lumotlar noto'g'ri",
   })
+  @Roles("doctor", "employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.doctorAppointmentService.remove(+id);

@@ -99,10 +99,16 @@ export class Employee extends Model<Employee, IEmployeeCreationAttr> {
 
   @Column({
     type: DataType.BOOLEAN,
-    defaultValue: false,
+    defaultValue: true,
   })
   declare is_active: boolean;
 
-  @HasOne(() => EmployeeRoom)
-  rooms: Room;
+  @Column({
+    type: DataType.STRING,
+    defaultValue: "employee",
+  })
+  declare role: string;
+
+  @BelongsToMany(() => Room, () => EmployeeRoom)
+  rooms: Room[];
 }

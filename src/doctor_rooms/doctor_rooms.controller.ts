@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { DoctorRoomsService } from './doctor_rooms.service';
 import { CreateDoctorRoomDto } from './dto/create-doctor_room.dto';
 import { UpdateDoctorRoomDto } from './dto/update-doctor_room.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { DoctorRoom } from './models/doctor_room.model';
+import { Roles } from '../common/decorators/roles-auth.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @Controller("doctor-rooms")
 export class DoctorRoomsController {
@@ -28,6 +31,9 @@ export class DoctorRoomsController {
     status: 400,
     description: "Yuborilgan maʼlumotlar noto‘g‘ri",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createDoctorRoomDto: CreateDoctorRoomDto) {
     return this.doctorRoomsService.create(createDoctorRoomDto);
@@ -48,6 +54,9 @@ export class DoctorRoomsController {
     status: 404,
     description: "Doktor va xona bog‘lanishlari topilmadi",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.doctorRoomsService.findAll();
@@ -73,6 +82,9 @@ export class DoctorRoomsController {
     status: 404,
     description: "Doktor va xona bog‘lanishi topilmadi",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.doctorRoomsService.findOne(+id);
@@ -107,6 +119,9 @@ export class DoctorRoomsController {
     status: 400,
     description: "Yuborilgan ma'lumotlar noto‘g‘ri",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   update(
     @Param("id") id: string,
@@ -138,6 +153,9 @@ export class DoctorRoomsController {
     status: 400,
     description: "Yuborilgan ma'lumotlar noto‘g‘ri",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.doctorRoomsService.remove(+id);

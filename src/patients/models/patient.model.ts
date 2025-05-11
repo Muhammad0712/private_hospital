@@ -95,4 +95,10 @@ export class Patient extends Model<Patient, IPatientCreationAttr> {
     allowNull: false,
   })
   declare passport_number: string;
+
+  @Column({
+    type: DataType.STRING,
+    defaultValue: "patient",
+  })
+  declare role: string;
 }

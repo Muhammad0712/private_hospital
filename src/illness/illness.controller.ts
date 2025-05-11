@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { IllnessService } from './illness.service';
 import { CreateIllnessDto } from './dto/create-illness.dto';
 import { UpdateIllnessDto } from './dto/update-illness.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { Illness } from './models/illness.model';
+import { Roles } from '../common/decorators/roles-auth.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @Controller("illness")
 export class IllnessController {
@@ -27,6 +30,9 @@ export class IllnessController {
     status: 400,
     description: "Yuborilgan ma'lumotlar noto'g'ri",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createIllnessDto: CreateIllnessDto) {
     return this.illnessService.create(createIllnessDto);
@@ -46,6 +52,9 @@ export class IllnessController {
     status: 404,
     description: "Kasalliklar topilmadi",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.illnessService.findAll();
@@ -74,6 +83,9 @@ export class IllnessController {
     status: 400,
     description: "Noto‘g‘ri ID formatida so‘rov yuborildi",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.illnessService.findOne(+id);
@@ -108,6 +120,9 @@ export class IllnessController {
     status: 400,
     description: "Yuborilgan ma'lumotlar noto‘g‘ri",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateIllnessDto: UpdateIllnessDto) {
     return this.illnessService.update(+id, updateIllnessDto);
@@ -132,6 +147,9 @@ export class IllnessController {
     status: 404,
     description: "Kasallik topilmadi",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.illnessService.remove(+id);

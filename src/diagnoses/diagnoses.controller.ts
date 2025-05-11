@@ -1,15 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { DiagnosesService } from './diagnoses.service';
 import { CreateDiagnosisDto } from './dto/create-diagnosis.dto';
 import { UpdateDiagnosisDto } from './dto/update-diagnosis.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { Diagnosis } from './models/diagnosis.model';
+import { JwtSelfGuard } from '../common/guards/jwt-self.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { Roles } from '../common/decorators/roles-auth.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
+
 
 @Controller("diagnoses")
 export class DiagnosesController {
   constructor(private readonly diagnosesService: DiagnosesService) {}
 
-  //____________________CREATE___________________
+  //____________________CREATE FOR ADMINS AND DOCTORS___________________
   @ApiOperation({
     summary: "Yangi tashxis qo'shish",
     description:
@@ -28,12 +33,15 @@ export class DiagnosesController {
     status: 400,
     description: "Yuborilgan ma'lumotlar noto‘g‘ri",
   })
-  @Post()
+  @Roles("doctor", "employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
+  @Post("admins")
   create(@Body() createDiagnosisDto: CreateDiagnosisDto) {
     return this.diagnosesService.create(createDiagnosisDto);
   }
 
-  //____________________FINDALL__________________
+  //____________________FINDALL FOR ADMINS AND DOCTORS__________________
   @ApiOperation({
     summary: "Barcha tashxislarni ko'rsatish",
     description: "Barcha tashxislar ro'yxatini qaytaradi",
@@ -47,12 +55,15 @@ export class DiagnosesController {
     status: 404,
     description: "Tashxislar topilmadi",
   })
+  @Roles("doctor", "employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.diagnosesService.findAll();
   }
 
-  //____________________FINDONE__________________
+  //____________________FINDONE FOR ADMINS AND DOCTORS__________________
   @ApiOperation({
     summary: "Tashxisni ID bo'yicha ko'rsatish",
     description: "Berilgan ID bo'yicha bitta tashxisni qaytaradi",
@@ -65,18 +76,21 @@ export class DiagnosesController {
   @ApiResponse({
     status: 200,
     description: "Tashxis muvaffaqiyatli topildi",
-    type: Diagnosis, // Bitta tashxis modeli
+    type: Diagnosis,
   })
   @ApiResponse({
     status: 404,
     description: "Tashxis topilmadi",
   })
-  @Get(":id")
+  @Roles("doctor", "employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
+  @Get("admins/:id")
   findOne(@Param("id") id: string) {
     return this.diagnosesService.findOne(+id);
   }
 
-  //____________________UPDATE___________________
+  //____________________UPDATE FOR ADMINS AND DOCTORS___________________
   @ApiOperation({
     summary: "Tashxisni yangilash",
     description: "Berilgan ID bo'yicha tashxisni yangilash",
@@ -103,38 +117,14 @@ export class DiagnosesController {
     status: 400,
     description: "Yuborilgan ma'lumotlar noto'g'ri",
   })
+  @Roles("doctor", "employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   update(
     @Param("id") id: string,
     @Body() updateDiagnosisDto: UpdateDiagnosisDto
   ) {
     return this.diagnosesService.update(+id, updateDiagnosisDto);
-  }
-
-  //____________________REMOVE___________________
-  @ApiOperation({
-    summary: "Tashxisni o'chirish",
-    description: "Berilgan ID bo'yicha tashxisni o'chirish",
-  })
-  @ApiParam({
-    name: "id",
-    type: String,
-    description: "O'chirilishi kerak bo'lgan tashxisning ID",
-  })
-  @ApiResponse({
-    status: 200,
-    description: "Tashxis muvaffaqiyatli o'chirildi",
-  })
-  @ApiResponse({
-    status: 404,
-    description: "Tashxis topilmadi",
-  })
-  @ApiResponse({
-    status: 400,
-    description: "Yuborilgan ma'lumotlar noto'g'ri",
-  })
-  @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.diagnosesService.remove(+id);
   }
 }

@@ -41,6 +41,6 @@ export class CreateDoctorDto {
   @Matches(/^(?=.*\d).{8,}$/,{ message:"Parol kamida 8 ta belgidan iborat bo‘lishi va kamida 1 ta raqam bo‘lishi kerak!"})
   password: string;
 
-  is_avtive: boolean;
+  is_active: boolean;
   refresh_token: string;
 }

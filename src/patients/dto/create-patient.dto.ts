@@ -52,19 +52,9 @@ export class CreatePatientDto {
   @IsNotEmpty({ message: "Iltimos parolingizni kiriting" })
   @Matches(
     /^(?=.*\d).{8,}$/, 
-    { message:"Parol kamida 8 ta belgidan iborat bo‘lishi va kamida 1 ta raqam bo‘lishi kerak!"})
+    { message:"Parol kamida 8 ta belgidan iborat bo‘lishi va kamida 1 ta raqam bo‘lishi kerak!1"})
   password: string;
 
-  @ApiProperty({
-    example: "Muhammad123456",
-    description: "Bu yerga foydalanuvchi paroli kiritiladi",
-  })
-  @IsNotEmpty({ message: "Iltimos parolingizni kiriting" })
-  @Matches(
-    /^(?=.*\d).{8,}$/, 
-    { message:"Parol kamida 8 ta belgidan iborat bo‘lishi va kamida 1 ta raqam bo‘lishi kerak!"})
-  confirm_password: string;
-  
   refresh_token: string;
   activation_link: string;
   is_active: boolean;

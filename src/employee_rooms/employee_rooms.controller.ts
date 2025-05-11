@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { EmployeeRoomsService } from './employee_rooms.service';
 import { CreateEmployeeRoomDto } from './dto/create-employee_room.dto';
 import { UpdateEmployeeRoomDto } from './dto/update-employee_room.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { EmployeeRoom } from './models/employee_room.models';
+import { Roles } from '../common/decorators/roles-auth.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @Controller("employee-rooms")
 export class EmployeeRoomsController {
@@ -27,6 +30,9 @@ export class EmployeeRoomsController {
     status: 400,
     description: "Yuborilgan ma’lumotlar noto‘g‘ri",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createEmployeeRoomDto: CreateEmployeeRoomDto) {
     return this.employeeRoomsService.create(createEmployeeRoomDto);
@@ -43,6 +49,9 @@ export class EmployeeRoomsController {
     type: [EmployeeRoom],
     description: "Bog‘lanishlar muvaffaqiyatli olindi",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.employeeRoomsService.findAll();
@@ -68,6 +77,9 @@ export class EmployeeRoomsController {
     status: 404,
     description: "Bog‘lanish topilmadi",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.employeeRoomsService.findOne(+id);
@@ -101,6 +113,9 @@ export class EmployeeRoomsController {
     status: 400,
     description: "Yuborilgan maʼlumotlar noto‘g‘ri",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   update(
     @Param("id") id: string,
@@ -132,6 +147,9 @@ export class EmployeeRoomsController {
     status: 400,
     description: "Yuborilgan maʼlumotlar noto‘g‘ri",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.employeeRoomsService.remove(+id);

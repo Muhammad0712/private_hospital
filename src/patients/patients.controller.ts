@@ -7,12 +7,16 @@ import {
   Param,
   Delete,
   Res,
+  UseGuards,
 } from "@nestjs/common";
 import { PatientsService } from "./patients.service";
 import { CreatePatientDto } from "./dto/create-patient.dto";
 import { UpdatePatientDto } from "./dto/update-patient.dto";
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from "@nestjs/swagger";
 import { Patient } from "./models/patient.model";
+import { Roles } from "../common/decorators/roles-auth.decorator";
+import { RolesGuard } from "../common/guards/roles.guard";
+import { JwtAuthGuard } from "../common/guards/jwt-auth.guard";
 
 @Controller("patients")
 export class PatientsController {
@@ -22,6 +26,9 @@ export class PatientsController {
 
   @ApiOperation({ summary: "Yangi bemor qo'sish" })
   @ApiResponse({ status: 201, type: CreatePatientDto })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createPatientDto: CreatePatientDto) {
     return this.patientsService.create(createPatientDto);
@@ -42,6 +49,9 @@ export class PatientsController {
     status: 400,
     description: "So‘rovni bajarishda xatolik yuz berdi.",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.patientsService.findAll();
@@ -90,6 +100,9 @@ export class PatientsController {
     status: 404,
     description: "Bemor topilmadi",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.patientsService.findOne(+id);
@@ -122,6 +135,9 @@ export class PatientsController {
     status: 400,
     description: "Yuborilgan ma'lumotlar noto'g'ri",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   update(@Param("id") id: string, @Body() updatePatientDto: UpdatePatientDto) {
     return this.patientsService.update(+id, updatePatientDto);
@@ -149,6 +165,9 @@ export class PatientsController {
     status: 400,
     description: "Yuborilgan ma'lumotlar noto'g'ri",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.patientsService.remove(+id);

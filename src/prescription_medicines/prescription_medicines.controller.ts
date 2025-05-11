@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { PrescriptionMedicinesService } from './prescription_medicines.service';
 import { CreatePrescriptionMedicineDto } from './dto/create-prescription_medicine.dto';
 import { UpdatePrescriptionMedicineDto } from './dto/update-prescription_medicine.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { PrescriptionMedicine } from './models/prescription_medicine.model';
+import { Roles } from '../common/decorators/roles-auth.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @Controller("prescription-medicines")
 export class PrescriptionMedicinesController {
@@ -32,6 +35,9 @@ export class PrescriptionMedicinesController {
     status: 500,
     description: "Server xatoligi",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createPrescriptionMedicineDto: CreatePrescriptionMedicineDto) {
     return this.prescriptionMedicinesService.create(
@@ -57,6 +63,9 @@ export class PrescriptionMedicinesController {
     status: 500,
     description: "Server xatoligi",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.prescriptionMedicinesService.findAll();
@@ -85,6 +94,9 @@ export class PrescriptionMedicinesController {
     status: 500,
     description: "Server xatoligi",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.prescriptionMedicinesService.findOne(+id);
@@ -121,6 +133,9 @@ export class PrescriptionMedicinesController {
     status: 500,
     description: "Server xatoligi",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   update(
     @Param("id") id: string,
@@ -154,6 +169,9 @@ export class PrescriptionMedicinesController {
     status: 500,
     description: "Server xatoligi",
   })
+  @Roles("employee", "doctor")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.prescriptionMedicinesService.remove(+id);

@@ -11,10 +11,6 @@ export class CreateDoctorAppointmentDto {
   @ApiProperty({ example: "1", description: "Bu yerga xona id raqami keladi" })
   roomId: number;
 
-  @ApiProperty({example: "Grip", description: "Bu yerga kasallik nomi kiritiladi"})
-  @IsNotEmpty({ message: "Iltimos kasallik nomini kiriting" })
-  cause_of_illness: string;
-
   @ApiProperty({example: "Shikoyat", description: "Bu yerga bemor shikoyati kiritiladi"})
   @IsNotEmpty({ message: "Iltimos shikoyatni kiriting" })
   complaint: string;

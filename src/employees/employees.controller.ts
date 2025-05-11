@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { Employee } from './models/employee.models';
+import { Roles } from '../common/decorators/roles-auth.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @Controller("employees")
 export class EmployeesController {
@@ -26,6 +29,9 @@ export class EmployeesController {
     status: 400,
     description: "Yuborilgan ma'lumotlar noto'g'ri",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createEmployeeDto: CreateEmployeeDto) {
     return this.employeesService.create(createEmployeeDto);
@@ -63,7 +69,7 @@ export class EmployeesController {
   @ApiResponse({
     status: 200,
     description: "Xodim ma'lumotlari muvaffaqiyatli olindi",
-    type: Employee, 
+    type: Employee,
   })
   @ApiResponse({
     status: 404,
@@ -130,7 +136,7 @@ export class EmployeesController {
   @ApiResponse({
     status: 400,
     description: "O'chirish jarayonida xatolik yuz berdi",
-  })  
+  })
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.employeesService.remove(+id);

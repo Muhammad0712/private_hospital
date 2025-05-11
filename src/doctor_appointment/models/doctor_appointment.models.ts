@@ -5,12 +5,12 @@ import { Room } from "../../rooms/models/room.model";
 import { MedicalLeaveRequest } from "../../medical_leave_request/models/medical_leave_request.model";
 import { Payment } from "../../payments/models/payment.model";
 import { Diagnosis } from "../../diagnoses/models/diagnosis.model";
+import { Prescription } from "../../prescription/models/prescription.model";
 
 interface IDoctorAppointmentCreationAttr {
     patientId: number;
     doctorId: number;
     roomId: number;
-    cause_of_illness: string;
     complaint: string;
     patient_queue: number;
 }
@@ -35,11 +35,6 @@ export class DoctorAppointment extends Model<DoctorAppointment, IDoctorAppointme
         type: DataType.INTEGER,
     })
     declare roomId: number;
-
-    @Column({
-        type: DataType.STRING,
-    })
-    declare cause_of_illness: string;
 
     @Column({
         type: DataType.TEXT,
@@ -70,4 +65,7 @@ export class DoctorAppointment extends Model<DoctorAppointment, IDoctorAppointme
 
     @HasMany(()=> Diagnosis)
     diagnosis: Diagnosis[];
+
+    @HasMany(()=> Prescription)
+    prescription: Prescription[]
 }

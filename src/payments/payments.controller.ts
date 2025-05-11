@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { Payment } from './models/payment.model';
+import { Roles } from '../common/decorators/roles-auth.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @Controller("payments")
 export class PaymentsController {
@@ -26,6 +29,9 @@ export class PaymentsController {
     status: 400,
     description: "Yuborilgan ma'lumotlar noto'g'ri",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createPaymentDto: CreatePaymentDto) {
     return this.paymentsService.create(createPaymentDto);
@@ -39,8 +45,11 @@ export class PaymentsController {
   @ApiResponse({
     status: 200,
     description: "To'lovlar muvaffaqiyatli qaytarildi",
-    type: [Payment]
+    type: [Payment],
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.paymentsService.findAll();
@@ -65,6 +74,9 @@ export class PaymentsController {
     status: 404,
     description: "To'lov topilmadi",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.paymentsService.findOne(+id);
@@ -87,7 +99,7 @@ export class PaymentsController {
   @ApiResponse({
     status: 200,
     description: "To'lov muvaffaqiyatli yangilandi",
-    type: UpdatePaymentDto
+    type: UpdatePaymentDto,
   })
   @ApiResponse({
     status: 404,
@@ -97,6 +109,9 @@ export class PaymentsController {
     status: 400,
     description: "Yuborilgan ma'lumotlar noto'g'ri",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   update(@Param("id") id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
     return this.paymentsService.update(+id, updatePaymentDto);
@@ -120,6 +135,9 @@ export class PaymentsController {
     status: 404,
     description: "To'lov topilmadi",
   })
+  @Roles("employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.paymentsService.remove(+id);

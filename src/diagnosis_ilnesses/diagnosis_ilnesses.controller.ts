@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { DiagnosisIlnessesService } from './diagnosis_ilnesses.service';
 import { CreateDiagnosisIlnessDto } from './dto/create-diagnosis_ilness.dto';
 import { UpdateDiagnosisIlnessDto } from './dto/update-diagnosis_ilness.dto';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { DiagnosisIlness } from './models/diagnosis_ilness.model';
+import { Roles } from '../common/decorators/roles-auth.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @Controller("diagnosis-ilnesses")
 export class DiagnosisIlnessesController {
@@ -29,6 +32,9 @@ export class DiagnosisIlnessesController {
     status: 400,
     description: "Yuborilgan ma'lumotlar noto'g'ri",
   })
+  @Roles("doctor", "employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createDiagnosisIlnessDto: CreateDiagnosisIlnessDto) {
     return this.diagnosisIlnessesService.create(createDiagnosisIlnessDto);
@@ -48,6 +54,9 @@ export class DiagnosisIlnessesController {
     status: 500,
     description: "Server xatoligi",
   })
+  @Roles("doctor", "employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.diagnosisIlnessesService.findAll();
@@ -76,6 +85,9 @@ export class DiagnosisIlnessesController {
     status: 500,
     description: "Server xatoligi",
   })
+  @Roles("doctor", "employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.diagnosisIlnessesService.findOne(+id);
@@ -113,6 +125,9 @@ export class DiagnosisIlnessesController {
     status: 500,
     description: "Server xatoligi",
   })
+  @Roles("doctor", "employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Patch(":id")
   update(
     @Param("id") id: string,
@@ -148,6 +163,9 @@ export class DiagnosisIlnessesController {
     status: 500,
     description: "Server xatoligi",
   })
+  @Roles("doctor", "employee")
+  @UseGuards(RolesGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.diagnosisIlnessesService.remove(+id);
