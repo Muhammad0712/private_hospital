@@ -10,8 +10,6 @@ import { UpdatePatientDto } from "./dto/update-patient.dto";
 import { InjectModel } from "@nestjs/sequelize";
 import { Patient } from "./models/patient.model";
 import { MailService } from "../mail/mail.service";
-import { SignInDto } from "../auth/dto/sign-in.dto";
-import { Response } from "express";
 import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 
@@ -49,10 +47,6 @@ export class PatientsService {
       include: { all: true },
     });
     return patients;
-  }
-
-  findPatientByMail(email: string) {
-    return this.patientModel.findOne({ where: { email } });
   }
 
   findOne(id: number) {

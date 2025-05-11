@@ -19,6 +19,7 @@ async function start() {
       .setDescription('Xususiy shifoxonalar uchun API')
       .setVersion('1.0')
       .addTag("Private-Hospital", "Shifoxonalar uchun API")
+      .addBearerAuth()
       .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('docs', app, document);

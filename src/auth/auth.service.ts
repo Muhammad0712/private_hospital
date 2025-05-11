@@ -11,20 +11,15 @@ import { SignInDto } from "./dto/sign-in.dto";
 
 import * as bcrypt from "bcrypt";
 import { Response } from "express";
-import { PatientsService } from "../patients/patients.service";
-import { Patient } from "../patients/models/patient.model";
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private readonly patientsService: PatientsService,
-    private readonly jwtService: JwtService
-  ) {}
+  constructor(private readonly jwtService: JwtService) {}
 
-  async generateTokens(user: Patient) {
+  async generateTokens(user: any) {
     const payload = {
       id: user.id,
-      email: user.is_active,
+      email: user.email,
       role: "patient",
     };
     const [accessToken, refreshToken] = await Promise.all([
@@ -43,19 +38,8 @@ export class AuthService {
     };
   }
 
-  async signUp(createPatientDto: CreatePatientDto) {
-    const candidate = await this.patientsService.findUserByEmail(
-      createPatientDto.email
-    );
-    if (candidate) {
-      throw new ConflictException("Bunday email tizimda mavjud!");
-    }
-    const newUser = await this.patientsService.create(createPatientDto);
-    return { message: "Foydalanuvchi qo'shildi!", userId: newUser.id };
-  }
-
-  async signIn(signInDto: SignInDto, res: Response) {
-    const user = await this.patientsService.findUserByEmail(signInDto.email);
+  async signIn(userModelService: any, signInDto: SignInDto, res: Response) {
+    const user = await userModelService.findUserByEmail(signInDto.email);
     if (!user) {
       throw new BadRequestException("Email yoki parol noto'g'ri!");
     }
@@ -80,7 +64,18 @@ export class AuthService {
     };
   }
 
-  async signOut(refreshToken: string, res: Response) {
+  async signUp(userModelService: any, createPatientDto: CreatePatientDto) {
+    const candidate = await userModelService.findPatientByMail(
+      createPatientDto.email
+    );
+    if (candidate) {
+      throw new ConflictException("Bunday email tizimda mavjud!");
+    }
+    const newUser = await userModelService.create(createPatientDto);
+    return { message: "Foydalanuvchi qo'shildi!", userId: newUser.id };
+  }
+
+  async signOut(userModelService: any, refreshToken: string, res: Response) {
     const userData = await this.jwtService.verify(refreshToken, {
       secret: process.env.REFRESH_TOKEN_KEY,
     });
@@ -88,7 +83,7 @@ export class AuthService {
       throw new ForbiddenException("User not verified!");
     }
     const hashed_refresh_token = "";
-    await this.patientsService.updateRefreshToken(
+    await userModelService.updateRefreshToken(
       userData.id,
       hashed_refresh_token!
     );
@@ -100,7 +95,12 @@ export class AuthService {
     return response;
   }
 
-  async refreshToken(userId: number, refresh_token: string, res: Response) {
+  async refreshToken(
+    userModelService: any,
+    userId: number,
+    refresh_token: string,
+    res: Response
+  ) {
     const decodedToken = await this.jwtService.decode(refresh_token);
     console.log(userId);
     console.log(decodedToken["id"]);
@@ -108,23 +108,23 @@ export class AuthService {
     if (userId !== decodedToken["id"]) {
       throw new ForbiddenException("Ruxsat etilmagan!");
     }
-    const user = await this.patientsService.findOne(userId);
+    const user = await userModelService.findOne(userId);
     console.log(user);
     if (!user && !user!.refresh_token) {
       throw new NotFoundException("User not found");
     }
 
-    const tokenMatch = await bcrypt.compare(
-      refresh_token,
-      user!.refresh_token
-    );
+    const tokenMatch = await bcrypt.compare(refresh_token, user!.refresh_token);
     if (!tokenMatch) {
       throw new ForbiddenException("Forbidden");
     }
 
     const { accessToken, refreshToken } = await this.generateTokens(user!);
     const hashed_refresh_token = await bcrypt.hash(refreshToken, 7);
-    await this.patientsService.updateRefreshToken(user!.id, hashed_refresh_token);
+    await userModelService.updateRefreshToken(
+      user!.id,
+      hashed_refresh_token
+    );
 
     res.cookie("refresh_token", refresh_token, {
       maxAge: Number(process.env.COOKIE_TIME),
@@ -133,7 +133,7 @@ export class AuthService {
 
     const response = {
       message: "User refreshed",
-      userId: user!.id,
+      userId: user.id,
       access_token: accessToken,
     };
     return response;

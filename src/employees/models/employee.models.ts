@@ -16,6 +16,7 @@ interface IEmployeeCreationAttr {
     refresh_token: string;
     is_admin: boolean;
     is_creator: boolean;
+    is_active: boolean;
 }
 
 @Table({ tableName: "employees", updatedAt: false })
@@ -95,6 +96,12 @@ export class Employee extends Model<Employee, IEmployeeCreationAttr> {
     defaultValue: false,
   })
   declare is_creator: boolean;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    defaultValue: false,
+  })
+  declare is_active: boolean;
 
   @HasOne(() => EmployeeRoom)
   rooms: Room;

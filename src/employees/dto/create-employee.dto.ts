@@ -63,7 +63,6 @@ export class CreateEmployeeDto {
     description: "Bu yerga foydalanuvchi maoshi kiritiladi",
   })
   @IsNotEmpty({ message: "Iltimos maoshni kiriting" })
-  @IsDecimal({},{ message: "Iltimos maoshni to'g'ri kiriting" })
   salary: number;
 
   @ApiProperty({
@@ -72,7 +71,7 @@ export class CreateEmployeeDto {
   })
   @IsEmail({}, { message: "Iltimos emailni kiriting" })
   @IsNotEmpty({ message: "Iltimos emailni to'g'ri kiriting" })
-  email: string;
+  email : string;
 
   @ApiProperty({ example: "Muhammad123", description: "Bu yerga foydalanuvchi paroli kiritiladi" })
   @IsNotEmpty({ message: "Iltimos parolni kiriting" })
@@ -82,4 +81,5 @@ export class CreateEmployeeDto {
   refresh_token: string;
   is_admin: boolean;
   is_creator: boolean;
+  is_active: boolean;
 }

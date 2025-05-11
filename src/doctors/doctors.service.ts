@@ -6,7 +6,9 @@ import { Doctor } from './models/doctor.model';
 
 @Injectable()
 export class DoctorsService {
-  constructor(@InjectModel(Doctor) private readonly doctorModel: typeof Doctor) {}
+  constructor(
+    @InjectModel(Doctor) private readonly doctorModel: typeof Doctor
+  ) {}
   create(createDoctorDto: CreateDoctorDto) {
     return this.doctorModel.create(createDoctorDto);
   }
@@ -25,5 +27,17 @@ export class DoctorsService {
 
   remove(id: number) {
     return this.doctorModel.destroy({ where: { id } });
+  }
+
+  findUserByEmail(email: string) {
+    return this.doctorModel.findOne({ where: { email } });
+  }
+
+  async updateRefreshToken(id: number, refresh_token: string) {
+    const updatedUser = await this.doctorModel.update(
+      { refresh_token },
+      { where: { id } }
+    );
+    return updatedUser;
   }
 }

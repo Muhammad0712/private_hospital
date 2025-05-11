@@ -8,5 +8,6 @@ import { EmployeeRoom } from './models/employee_room.models';
   imports: [SequelizeModule.forFeature([EmployeeRoom])],
   controllers: [EmployeeRoomsController],
   providers: [EmployeeRoomsService],
+  exports: [EmployeeRoomsService],
 })
 export class EmployeeRoomsModule {}
